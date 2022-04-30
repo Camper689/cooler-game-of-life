@@ -5,26 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9e2eb471-2f42-44b5-8c4c-8e1518dfa788" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cgol/cell/AbstractCell.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cgol/cell/Cell.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cgol/cell/EmptyCell.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cgol/cell/PopulatedCell.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cgol/cell/behavior/CellBehavior.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cgol/cell/behavior/EmptyCellBehavior.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cgol/cell/behavior/PopulatedCellBehavior.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cgol/game/ConsoleGameOfLife.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cgol/game/GameOfLife.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cgol/grid/AbstractCellGrid.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cgol/grid/ArrayCellGrid.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cgol/grid/CellGrid.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cgol/utils/Behaviors.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cgol/utils/CellCreator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/cgol/utils/CellGridForEachHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/cgol/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cgol/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cgol/cell/AbstractCell.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cgol/cell/AbstractCell.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cgol/cell/Cell.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cgol/cell/Cell.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cgol/cell/EmptyCell.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cgol/cell/EmptyCell.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cgol/cell/PopulatedCell.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cgol/cell/PopulatedCell.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cgol/cell/behavior/CellBehavior.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cgol/cell/behavior/CellBehavior.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cgol/cell/behavior/EmptyCellBehavior.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cgol/cell/behavior/EmptyCellBehavior.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cgol/cell/behavior/PopulatedCellBehavior.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cgol/cell/behavior/PopulatedCellBehavior.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cgol/game/ConsoleGameOfLife.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cgol/game/GameOfLife.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cgol/game/GameOfLife.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cgol/grid/ArrayCellGrid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cgol/grid/ArrayCellGrid.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cgol/grid/CellGrid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cgol/grid/CellGrid.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cgol/utils/Behaviors.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cgol/cell/behavior/Behaviors.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cgol/utils/CellCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cgol/utils/CellCreator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,5 +108,16 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/cgol/grid/ArrayCellGrid.java</url>
+          <line>40</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

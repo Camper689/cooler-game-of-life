@@ -7,4 +7,6 @@ public interface CellBehavior {
     default void evolve(Cell cell, Cell[] neighbours) {
 
     }
+
+    int getTag();
 }
