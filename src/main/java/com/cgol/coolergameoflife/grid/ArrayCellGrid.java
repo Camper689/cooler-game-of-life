@@ -1,7 +1,7 @@
-package com.cgol.grid;
+package com.cgol.coolergameoflife.grid;
 
-import com.cgol.cell.Cell;
-import com.cgol.utils.CellCreator;
+import com.cgol.coolergameoflife.cell.Cell;
+import com.cgol.coolergameoflife.utils.CellCreator;
 import org.jetbrains.annotations.NotNull;
 
 public class ArrayCellGrid extends AbstractCellGrid {

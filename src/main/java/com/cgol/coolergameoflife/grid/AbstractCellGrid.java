@@ -1,6 +1,6 @@
-package com.cgol.grid;
+package com.cgol.coolergameoflife.grid;
 
-import com.cgol.utils.CellGridForEachHandler;
+import com.cgol.coolergameoflife.utils.CellGridForEachHandler;
 
 public abstract class AbstractCellGrid implements CellGrid {
 

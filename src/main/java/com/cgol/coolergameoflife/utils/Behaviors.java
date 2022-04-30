@@ -1,8 +1,8 @@
-package com.cgol.utils;
+package com.cgol.coolergameoflife.utils;
 
-import com.cgol.cell.behavior.CellBehavior;
-import com.cgol.cell.behavior.EmptyCellBehavior;
-import com.cgol.cell.behavior.PopulatedCellBehavior;
+import com.cgol.coolergameoflife.cell.behavior.CellBehavior;
+import com.cgol.coolergameoflife.cell.behavior.EmptyCellBehavior;
+import com.cgol.coolergameoflife.cell.behavior.PopulatedCellBehavior;
 
 public final class Behaviors {
 

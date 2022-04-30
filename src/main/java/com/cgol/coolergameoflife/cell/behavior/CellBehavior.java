@@ -1,6 +1,6 @@
-package com.cgol.cell.behavior;
+package com.cgol.coolergameoflife.cell.behavior;
 
-import com.cgol.cell.Cell;
+import com.cgol.coolergameoflife.cell.Cell;
 
 public interface CellBehavior {
 

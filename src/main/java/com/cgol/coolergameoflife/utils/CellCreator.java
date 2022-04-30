@@ -1,8 +1,8 @@
-package com.cgol.utils;
+package com.cgol.coolergameoflife.utils;
 
-import com.cgol.cell.Cell;
-import com.cgol.cell.EmptyCell;
-import com.cgol.cell.PopulatedCell;
+import com.cgol.coolergameoflife.cell.Cell;
+import com.cgol.coolergameoflife.cell.EmptyCell;
+import com.cgol.coolergameoflife.cell.PopulatedCell;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;

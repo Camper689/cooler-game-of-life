@@ -1,7 +1,7 @@
-package com.cgol.cell.behavior;
+package com.cgol.coolergameoflife.cell.behavior;
 
-import com.cgol.cell.Cell;
-import com.cgol.utils.Behaviors;
+import com.cgol.coolergameoflife.cell.Cell;
+import com.cgol.coolergameoflife.utils.Behaviors;
 
 public class EmptyCellBehavior implements CellBehavior {
 

@@ -1,4 +1,4 @@
-package com.cgol.utils;
+package com.cgol.coolergameoflife.utils;
 
 @FunctionalInterface
 public interface CellGridForEachHandler {

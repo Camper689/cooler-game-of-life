@@ -1,6 +1,6 @@
-package com.cgol.cell;
+package com.cgol.coolergameoflife.cell;
 
-import com.cgol.cell.behavior.CellBehavior;
+import com.cgol.coolergameoflife.cell.behavior.CellBehavior;
 
 public abstract class AbstractCell implements Cell {
 

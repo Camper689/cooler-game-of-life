@@ -1,9 +1,9 @@
-package com.cgol.game;
+package com.cgol.coolergameoflife.game;
 
-import com.cgol.cell.Cell;
-import com.cgol.grid.ArrayCellGrid;
-import com.cgol.grid.CellGrid;
-import com.cgol.utils.CellCreator;
+import com.cgol.coolergameoflife.cell.Cell;
+import com.cgol.coolergameoflife.grid.ArrayCellGrid;
+import com.cgol.coolergameoflife.grid.CellGrid;
+import com.cgol.coolergameoflife.utils.CellCreator;
 
 public class GameOfLife {
 
