@@ -6,7 +6,7 @@ var WIDTH = 100;
 var HEIGHT = 100;
 
 var PLAYING = false;
-var SCALE = 1;
+var SCALE = 1.5;
 
 var SIZE = 10;
 var OFFSET = 0;
@@ -19,6 +19,20 @@ var HOVER_INDEX = -1;
 var MOUSE_CLICKED = false;
 
 setInterval(evolveIfPlaying, 500);
+
+function zoomIn() {
+    if(SCALE < 0.5) return;
+
+    SCALE -= 0.1;
+    draw();
+}
+
+function zoomOut() {
+    if(SCALE > 3) return;
+
+    SCALE += 0.1;
+    draw();
+}
 
 function setMouseClickedState() {
     var flags = event.buttons !== undefined ? event.buttons : event.which;
@@ -50,19 +64,19 @@ function onGridHover() {
     const previousHoverRow = HOVER_ROW;
     const previousHoverIndex = HOVER_INDEX;
 
-    const sizeWithOffset = SIZE + OFFSET;
+    const rectSize = (SIZE + OFFSET) / SCALE;
     var topOffset;
 
     for(var rowIndex = 0; rowIndex < DATA.length; rowIndex++) {
-        topOffset = rowIndex * sizeWithOffset;
+        topOffset = rowIndex * rectSize;
 
-        if(mouseY >= topOffset && mouseY <= topOffset + sizeWithOffset) {
+        if(mouseY >= topOffset && mouseY <= topOffset + rectSize) {
             HOVER_ROW = rowIndex;
 
             const row = DATA[rowIndex];
             for(var index = 0; index < row.length; index++) {
-                var leftOffset = index * sizeWithOffset + OFFSET;
-                if(mouseX >= leftOffset && mouseX <= leftOffset + sizeWithOffset) {
+                var leftOffset = index * rectSize;
+                if(mouseX >= leftOffset && mouseX <= leftOffset + rectSize) {
                     HOVER_INDEX = index;
                     break;
                 }
@@ -95,8 +109,8 @@ function drawHover() {
 
     const ctx = getAndResizeCanvasContext('hover');
 
-    const left = HOVER_INDEX * (SIZE + OFFSET);
-    const top = HOVER_ROW * (SIZE + OFFSET);
+    const left = HOVER_INDEX * (SIZE + OFFSET) + OFFSET;
+    const top = HOVER_ROW * (SIZE + OFFSET) + OFFSET;
 
     ctx.fillStyle = 'yellow';
     ctx.fillRect(left, top, SIZE, SIZE);
@@ -155,10 +169,7 @@ function getStyleFromTag(tag) {
 }
 
 function newGame() {
-    var size = Number.parseInt(prompt('Enter field size:', 100));
-    if(isNaN(size)) return;
-
-    httpPost(URL_NEW_GAME, {width: size, height: size});
+    httpPost(URL_NEW_GAME, {width: 300, height: 150});
     update();
 }
 

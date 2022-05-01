@@ -28,3 +28,7 @@ canvas {
 #grid {
     z-index: 0;
 }
+
+.nav-item {
+    margin-left: 10px;
+}
