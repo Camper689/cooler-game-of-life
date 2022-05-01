@@ -1,20 +1,21 @@
 package com.cgol.coolergameoflife.grid;
 
 import com.cgol.coolergameoflife.cell.Cell;
-import com.cgol.coolergameoflife.utils.CellCreator;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Supplier;
 
 public class ArrayCellGrid extends AbstractCellGrid {
 
     private final Cell[][] grid;
 
-    public ArrayCellGrid(int width, int height, @NotNull CellCreator cellCreator) {
+    public ArrayCellGrid(int width, int height, @NotNull Supplier<Cell> cellCreator) {
         super(width, height);
 
         this.grid = new Cell[width][height];
 
         forEach((x, y) -> {
-            Cell cell = cellCreator.create(x, y);
+            Cell cell = cellCreator.get();
             setCell(cell, x, y);
         });
 

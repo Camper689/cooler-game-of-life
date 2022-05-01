@@ -6,14 +6,8 @@ public abstract class AbstractCell implements Cell {
 
     protected CellBehavior cellBehavior;
 
-    private int x;
-    private int y;
-
-    protected AbstractCell(CellBehavior cellBehavior, int x, int y) {
+    protected AbstractCell(CellBehavior cellBehavior) {
         this.cellBehavior = cellBehavior;
-
-        this.x = x;
-        this.y = y;
     }
 
     @Override
@@ -41,27 +35,8 @@ public abstract class AbstractCell implements Cell {
     }
 
     @Override
-    public int getX() {
-        return x;
-    }
-
-    @Override
-    public int getY() {
-        return y;
-    }
-
-    @Override
     public void setBehavior(CellBehavior newCellBehavior) {
         this.cellBehavior = newCellBehavior;
     }
 
-    @Override
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    @Override
-    public void setY(int y) {
-        this.y = y;
-    }
 }

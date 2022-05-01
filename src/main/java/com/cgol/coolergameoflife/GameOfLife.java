@@ -1,9 +1,9 @@
-package com.cgol.coolergameoflife.game;
+package com.cgol.coolergameoflife;
 
 import com.cgol.coolergameoflife.cell.Cell;
+import com.cgol.coolergameoflife.cell.EmptyCell;
 import com.cgol.coolergameoflife.grid.ArrayCellGrid;
 import com.cgol.coolergameoflife.grid.CellGrid;
-import com.cgol.coolergameoflife.utils.CellCreator;
 
 public class GameOfLife {
 
@@ -11,11 +11,8 @@ public class GameOfLife {
     private CellGrid tempGrid;
 
     public GameOfLife(int width, int height) {
-        this.currentGrid = new ArrayCellGrid(width, height, CellCreator.EMPTY_CELL_CREATOR);
-        this.tempGrid = new ArrayCellGrid(width, height, CellCreator.EMPTY_CELL_CREATOR);
-    }
-
-    public void init() {
+        this.currentGrid = new ArrayCellGrid(width, height, EmptyCell::new);
+        this.tempGrid = new ArrayCellGrid(width, height, EmptyCell::new);
     }
 
     public void evolve() {
