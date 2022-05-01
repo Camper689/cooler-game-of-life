@@ -10,9 +10,10 @@ public class EmptyCellBehavior implements CellBehavior {
         int count = 0;
         for (Cell neighbour : neighbours) {
             count += neighbour.getTag();
-            if(count >= 3) {
-                cell.setBehavior(Behaviors.POPULATED_CELL);
-            }
+        }
+
+        if(count == 3) {
+            cell.setBehavior(Behaviors.POPULATED_CELL);
         }
     }
 

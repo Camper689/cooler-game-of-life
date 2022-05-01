@@ -12,7 +12,7 @@ public class PopulatedCellBehavior implements CellBehavior {
             count += neighbour.getTag();
         }
 
-        if(count >= 5 || count < 2) {
+        if(count != 3 && count != 2) {
             cell.setBehavior(Behaviors.EMPTY_CELL);
         }
     }

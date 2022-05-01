@@ -19,16 +19,18 @@ public class GameOfLifeService {
     }
 
     public List<List<Integer>> getGrid() {
-        if(game == null) return null;
+        if (game == null) {
+            return null;
+        }
 
         CellGrid cellGrid = game.grid();
 
         List<List<Integer>> result = new ArrayList<>();
         List<Integer> currentList;
 
-        for (int x = 0; x < cellGrid.getWidth(); x++) {
+        for (int y = 0; y < cellGrid.getHeight(); y++) {
             currentList = new ArrayList<>();
-            for (int y = 0; y < cellGrid.getHeight(); y++) {
+            for (int x = 0; x < cellGrid.getWidth(); x++) {
                 currentList.add(cellGrid.getCell(x, y).getTag());
             }
             result.add(currentList);
@@ -38,15 +40,20 @@ public class GameOfLifeService {
     }
 
     public void evolve() {
-        if(game != null) game.evolve();
+        if (game != null) {
+            game.evolve();
+        }
     }
 
     public void addCell(int x, int y) {
-        if(game == null) return;
+        if (game == null) {
+            return;
+        }
 
         CellGrid grid = game.grid();
         Cell cell = grid.getCell(x, y);
-        if(cell.getTag() == 0)
+        if (cell.getTag() == 0) {
             grid.setCell(new PopulatedCell(), x, y);
+        }
     }
 }

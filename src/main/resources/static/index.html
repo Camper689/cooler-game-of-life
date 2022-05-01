@@ -30,6 +30,9 @@
                         </button>
                     </li>
                     <li class="nav-item">
+                        <button class="btn btn-success" type="button" onclick="evolve()">Evolve</button>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link disabled"><i class="bi bi-pause-fill"></i></a>
                     </li>
                 </ul>
@@ -39,7 +42,7 @@
 
     <div class="container-fluid h-100 mt-2">
         <div class="h-100 w-100" style="position: relative">
-            <canvas id="hover" onmousemove="onGridHover()" onclick="putCell()"></canvas>
+            <canvas id="hover" onmousedown="setMouseClickedState()" onmouseup="setMouseClickedState()" onmousemove="onGridHover()" onclick="putCell()"></canvas>
             <canvas id="grid"></canvas>
         </div>
     </div>

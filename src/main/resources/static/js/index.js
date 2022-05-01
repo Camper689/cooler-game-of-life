@@ -6,7 +6,7 @@ var WIDTH = 100;
 var HEIGHT = 100;
 
 var PLAYING = false;
-var SCALE = 1.2;
+var SCALE = 1;
 
 var SIZE = 10;
 var OFFSET = 0;
@@ -16,7 +16,14 @@ var DATA;
 var HOVER_ROW = -1;
 var HOVER_INDEX = -1;
 
+var MOUSE_CLICKED = false;
+
 setInterval(evolveIfPlaying, 500);
+
+function setMouseClickedState() {
+    var flags = event.buttons !== undefined ? event.buttons : event.which;
+    MOUSE_CLICKED = (flags & 1) === 1;
+}
 
 function putCell() {
     if(!DATA || HOVER_INDEX == -1)
@@ -25,8 +32,12 @@ function putCell() {
     var x = HOVER_INDEX;
     var y = HOVER_ROW;
 
-    httpPut("/add/" + x + "/" + y, null);
-    update();
+    var current = DATA[y][x];
+
+    if(current == 0) {
+        httpPut("/add/" + x + "/" + y, null);
+        update();
+    }
 }
 
 function onGridHover() {
@@ -64,6 +75,9 @@ function onGridHover() {
     if(HOVER_INDEX != -1 && (
         previousHoverRow != HOVER_ROW || previousHoverIndex != HOVER_INDEX
     )) drawHover();
+
+    if(MOUSE_CLICKED)
+        putCell();
 }
 
 function getAndResizeCanvasContext(id) {
