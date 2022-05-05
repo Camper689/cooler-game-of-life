@@ -2,8 +2,8 @@ package com.cgol.service;
 
 import com.cgol.coolergameoflife.GameOfLife;
 import com.cgol.coolergameoflife.cell.Cell;
-import com.cgol.coolergameoflife.cell.PopulatedCell;
 import com.cgol.coolergameoflife.grid.CellGrid;
+import com.cgol.coolergameoflife.utils.CellStates;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class GameOfLifeService {
         for (int y = 0; y < cellGrid.getHeight(); y++) {
             currentList = new ArrayList<>();
             for (int x = 0; x < cellGrid.getWidth(); x++) {
-                currentList.add(cellGrid.getCell(x, y).getTag());
+                currentList.add(cellGrid.getCell(x, y).tag());
             }
             result.add(currentList);
         }
@@ -52,8 +52,8 @@ public class GameOfLifeService {
 
         CellGrid grid = game.grid();
         Cell cell = grid.getCell(x, y);
-        if (cell.getTag() == 0) {
-            grid.setCell(new PopulatedCell(), x, y);
+        if (cell.tag() == 0) {
+            grid.setCell(new Cell(CellStates.DEFAULT_POPULATED_CELL_BEHAVIOR), x, y);
         }
     }
 }
