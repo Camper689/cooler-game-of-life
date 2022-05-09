@@ -1,24 +1,24 @@
 package com.cgol.coolergameoflife.utils;
 
 import com.cgol.coolergameoflife.cell.state.CellState;
-import com.cgol.coolergameoflife.cell.state.CellStatePredicate;
+import com.cgol.coolergameoflife.cell.state.CellStateCondition;
 import com.cgol.coolergameoflife.cell.state.CellStateTransition;
 
 import java.util.List;
 
 public final class CellStates {
 
-    private static final int EMPTY_CELL_TAG = 0;
-    private static final int POPULATED_CELL_TAG = 1;
+    private static final String EMPTY_CELL_TAG = "Empty cell";
+    private static final String POPULATED_CELL_TAG = "Populated cell";
 
     public static final CellState DEFAULT_EMPTY_CELL_BEHAVIOR = new CellState(
             EMPTY_CELL_TAG,
             List.of(
                     new CellStateTransition(
-                            new CellStatePredicate(
-                                    3,
+                            new CellStateCondition(
+                                    POPULATED_CELL_TAG,
                                     Difference.EQUALS,
-                                    POPULATED_CELL_TAG
+                                    3
                             ),
                             POPULATED_CELL_TAG
                     )
@@ -29,18 +29,18 @@ public final class CellStates {
             POPULATED_CELL_TAG,
             List.of(
                     new CellStateTransition(
-                            new CellStatePredicate(
-                                    2,
-                                    Difference.MORE,
-                                    POPULATED_CELL_TAG
+                            new CellStateCondition(
+                                    POPULATED_CELL_TAG,
+                                    Difference.LESS,
+                                    2
                             ),
                             EMPTY_CELL_TAG
                     ),
                     new CellStateTransition(
-                            new CellStatePredicate(
-                                    4,
-                                    Difference.LESS_OR_EQUAL,
-                                    POPULATED_CELL_TAG
+                            new CellStateCondition(
+                                    POPULATED_CELL_TAG,
+                                    Difference.MORE_OR_EQUAL,
+                                    4
                             ),
                             EMPTY_CELL_TAG
                     )

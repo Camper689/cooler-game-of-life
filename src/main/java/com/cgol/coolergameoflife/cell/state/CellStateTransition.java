@@ -2,19 +2,19 @@ package com.cgol.coolergameoflife.cell.state;
 
 public class CellStateTransition {
 
-    private final CellStatePredicate predicate;
-    private final int newStateTag;
+    private final CellStateCondition condition;
+    private final String newStateTag;
 
-    public CellStateTransition(CellStatePredicate predicate, int newStateTag) {
-        this.predicate = predicate;
+    public CellStateTransition(CellStateCondition condition, String newStateTag) {
+        this.condition = condition;
         this.newStateTag = newStateTag;
     }
 
-    public CellStatePredicate getPredicate() {
-        return predicate;
+    public CellStateCondition predicate() {
+        return condition;
     }
 
-    public int getNewStateTag() {
+    public String newStateTag() {
         return newStateTag;
     }
 }

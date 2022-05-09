@@ -1,8 +1,7 @@
 package com.cgol.coolergameoflife.cell;
 
-import com.cgol.coolergameoflife.cell.context.CellContext;
-import com.cgol.coolergameoflife.cell.state.CellState;
 import com.cgol.coolergameoflife.GameOfLifeConfiguration;
+import com.cgol.coolergameoflife.cell.state.CellState;
 
 public class Cell implements Cloneable {
 
@@ -21,8 +20,8 @@ public class Cell implements Cloneable {
     }
 
     public boolean evolve(CellContext context, GameOfLifeConfiguration configuration) {
-        int newTag = state.evolve(context);
-        if(newTag != tag()) {
+        String newTag = state.evolve(context);
+        if (newTag != null) {
             this.state = configuration.getState(newTag);
             return true;
         }
@@ -30,15 +29,7 @@ public class Cell implements Cloneable {
         return false;
     }
 
-    public CellState behavior() {
-        return state;
-    }
-
-    public int tag() {
+    public String tag() {
         return state.tag();
-    }
-
-    public void behavior(CellState newCellState) {
-        this.state = newCellState;
     }
 }

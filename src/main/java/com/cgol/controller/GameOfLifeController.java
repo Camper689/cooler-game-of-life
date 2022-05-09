@@ -1,6 +1,8 @@
 package com.cgol.controller;
 
-import com.cgol.dto.GridSize;
+import com.cgol.dto.ConfigurationDto;
+import com.cgol.dto.GridDto;
+import com.cgol.dto.GridSizeDto;
 import com.cgol.service.GameOfLifeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,8 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 public class GameOfLifeController {
 
@@ -19,7 +19,7 @@ public class GameOfLifeController {
     private GameOfLifeService gameOfLifeService;
 
     @GetMapping("/grid")
-    public List<List<Integer>> getGrid() {
+    public GridDto getGrid() {
         return gameOfLifeService.getGrid();
     }
 
@@ -29,12 +29,17 @@ public class GameOfLifeController {
     }
 
     @PostMapping("/new-game")
-    public void newGame(@RequestBody GridSize gridSize) {
-        gameOfLifeService.newGame(gridSize.getWidth(), gridSize.getHeight());
+    public void newGame(@RequestBody GridSizeDto gridSizeDto) {
+        gameOfLifeService.newGame(gridSizeDto.getWidth(), gridSizeDto.getHeight());
     }
 
     @PostMapping("/evolve")
-    public void evolve() {
-        gameOfLifeService.evolve();
+    public GridDto evolve() {
+        return gameOfLifeService.evolve();
+    }
+
+    @GetMapping("/configuration")
+    public ConfigurationDto getConfiguration() {
+        return gameOfLifeService.getConfiguration();
     }
 }

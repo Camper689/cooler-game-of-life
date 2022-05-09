@@ -6,9 +6,9 @@ This is my java implementation of Conway's Game of Life.
 
 ### How to play:
 - Run CoolerGameOfLifeApplication class;
-- Open http://localh*ost:9090 in your browser;
+- Open http://localhost:9090 in your browser;
 - Put some cells on the grid;
-- Press "Play"*
+- Press "Play"
 
 ### TODO:
 - Custom cells

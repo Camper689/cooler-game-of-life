@@ -1,27 +1,21 @@
 package com.cgol.coolergameoflife;
 
 import com.cgol.coolergameoflife.cell.Cell;
-import com.cgol.coolergameoflife.cell.context.CellContext;
+import com.cgol.coolergameoflife.cell.CellContext;
 import com.cgol.coolergameoflife.grid.ArrayCellGrid;
 import com.cgol.coolergameoflife.grid.CellGrid;
-import com.cgol.coolergameoflife.utils.CellStates;
-
-import java.util.function.Supplier;
 
 public class GameOfLife {
 
-    private static final Supplier<Cell> EMPTY_CELL_SUPPLIER = () -> new Cell(CellStates.DEFAULT_EMPTY_CELL_BEHAVIOR);
-
     private CellGrid currentGrid;
     private CellGrid tempGrid;
-    private final GameOfLifeConfiguration configuration = new GameOfLifeConfiguration();
+    private final GameOfLifeConfiguration configuration;
 
-    public GameOfLife(int width, int height) {
-        this.currentGrid = new ArrayCellGrid(width, height, EMPTY_CELL_SUPPLIER);
-        this.tempGrid = new ArrayCellGrid(width, height, EMPTY_CELL_SUPPLIER);
+    public GameOfLife(int width, int height, GameOfLifeConfiguration configuration) {
+        this.configuration = configuration;
 
-        this.configuration.addState(CellStates.DEFAULT_EMPTY_CELL_BEHAVIOR);
-        this.configuration.addState(CellStates.DEFAULT_POPULATED_CELL_BEHAVIOR);
+        this.currentGrid = new ArrayCellGrid(width, height, configuration::generateDefaultCell);
+        this.tempGrid = new ArrayCellGrid(width, height, configuration::generateDefaultCell);
     }
 
     public void evolve() {
