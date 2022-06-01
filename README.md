@@ -13,6 +13,7 @@ This is my java implementation of Conway's Game of Life.
 - Press "Play"
 
 ### TODO:
+- Multiple game sessions instead of one
 - Import / export configuration
 - Save / load game state (lexicon)
 - Optimize evolve method for bigger grid
