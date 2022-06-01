@@ -16,6 +16,8 @@ This is my java implementation of Conway's Game of Life.
 - Import / export configuration
 - Save / load game state (lexicon)
 - Optimize evolve method for bigger grid
+- Save color palette in cookies
+- Make condition for cell transition more complex - add random and OR / AND operators
 
 ### Examples:
 Basic game of life configuration:
