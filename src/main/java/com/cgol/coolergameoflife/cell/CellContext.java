@@ -1,8 +1,5 @@
 package com.cgol.coolergameoflife.cell;
 
-import com.cgol.coolergameoflife.cell.Cell;
-import com.cgol.coolergameoflife.cell.state.CellState;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,12 +12,12 @@ public class CellContext {
         this.neighbours = neighbours;
     }
 
-    public short countNeighbours(String tag) {
+    public short countNeighbours(String name) {
         return cache.computeIfAbsent(
-                tag, (key) -> {
+                name, (key) -> {
                     short count = 0;
                     for (Cell neighbour : neighbours) {
-                        if (neighbour.tag().equals(key)) {
+                        if (neighbour.name().equals(key)) {
                             count++;
                         }
                     }

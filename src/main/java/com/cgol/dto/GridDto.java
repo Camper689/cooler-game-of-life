@@ -23,7 +23,7 @@ public class GridDto {
             grid.add(currentList);
 
             for (int x = 0; x < cellGrid.getWidth(); x++) {
-                String tag = cellGrid.getCell(x, y).tag();
+                String tag = cellGrid.getCell(x, y).name();
                 int tagReplace = replaces.computeIfAbsent(tag, key -> current.getAndIncrement());
 
                 currentList.add(tagReplace);

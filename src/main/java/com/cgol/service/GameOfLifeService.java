@@ -4,20 +4,17 @@ import com.cgol.coolergameoflife.GameOfLife;
 import com.cgol.coolergameoflife.GameOfLifeConfiguration;
 import com.cgol.coolergameoflife.cell.Cell;
 import com.cgol.coolergameoflife.grid.CellGrid;
-import com.cgol.dto.ConfigurationDto;
 import com.cgol.dto.GridDto;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GameOfLifeService {
 
-    private GameOfLife game = new GameOfLife(
-            100, 100,
-            GameOfLifeConfiguration.DEFAULT_CONFIGURATION
-    );
+    private GameOfLife game = new GameOfLife(100, 100, GameOfLifeConfiguration.DEFAULT_CONFIGURATION);
 
-    public void newGame(int width, int height) {
-        game = new GameOfLife(width, height, GameOfLifeConfiguration.DEFAULT_CONFIGURATION);
+    public void newGame(int width, int height, GameOfLifeConfiguration configuration) {
+        configuration.validate();
+        game = new GameOfLife(width, height, configuration);
     }
 
     public GridDto evolve() {
@@ -25,12 +22,12 @@ public class GameOfLifeService {
         return getGrid();
     }
 
-    public void addCell(int x, int y) {
+    public void addCell(int x, int y, String name) {
         CellGrid grid = game.grid();
         GameOfLifeConfiguration configuration = game.configuration();
 
-        Cell cell = new Cell(configuration.getState("Populated cell"));
-        grid.setCell(cell, x, y);
+        Cell cell = grid.getCell(x, y);
+        cell.evolveInto(configuration.getState(name));
     }
 
     // TODO: optimize
@@ -39,7 +36,7 @@ public class GameOfLifeService {
         return new GridDto(cellGrid);
     }
 
-    public ConfigurationDto getConfiguration() {
-        return new ConfigurationDto(game.configuration());
+    public GameOfLifeConfiguration getConfiguration() {
+        return game.configuration();
     }
 }

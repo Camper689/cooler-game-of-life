@@ -4,5 +4,4 @@ package com.cgol.coolergameoflife.utils;
 public interface CellGridForEachHandler {
 
     void handle(int x, int y);
-
 }

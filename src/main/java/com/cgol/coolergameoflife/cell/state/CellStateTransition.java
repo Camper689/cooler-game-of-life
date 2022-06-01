@@ -1,20 +1,27 @@
 package com.cgol.coolergameoflife.cell.state;
 
+import com.cgol.utils.TrimStringDeserializer;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 public class CellStateTransition {
 
+    @JsonDeserialize(using = TrimStringDeserializer.class)
+    private final String newStateName;
     private final CellStateCondition condition;
-    private final String newStateTag;
 
-    public CellStateTransition(CellStateCondition condition, String newStateTag) {
+    public CellStateTransition(CellStateCondition condition, String newStateName) {
         this.condition = condition;
-        this.newStateTag = newStateTag;
+        this.newStateName = newStateName;
     }
 
-    public CellStateCondition predicate() {
+    @JsonGetter
+    public CellStateCondition condition() {
         return condition;
     }
 
-    public String newStateTag() {
-        return newStateTag;
+    @JsonGetter
+    public String newStateName() {
+        return newStateName;
     }
 }

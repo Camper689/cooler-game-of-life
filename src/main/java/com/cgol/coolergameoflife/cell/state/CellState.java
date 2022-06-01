@@ -1,34 +1,40 @@
 package com.cgol.coolergameoflife.cell.state;
 
 import com.cgol.coolergameoflife.cell.CellContext;
+import com.cgol.utils.TrimStringDeserializer;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class CellState {
 
-    private final String tag;
+    @JsonDeserialize(using = TrimStringDeserializer.class)
+    private final String name;
     private final List<CellStateTransition> transitions;
 
-    public CellState(String tag, List<CellStateTransition> transitions) {
-        this.tag = tag;
+    public CellState(String name, List<CellStateTransition> transitions) {
+        this.name = name;
         this.transitions = transitions;
     }
 
     public @Nullable String evolve(CellContext context) {
         for (CellStateTransition transition : transitions) {
-            if (transition.predicate().check(context)) {
-                return transition.newStateTag();
+            if (transition.condition().check(context)) {
+                return transition.newStateName();
             }
         }
 
-        return this.tag;
+        return null;
     }
 
-    public String tag() {
-        return tag;
+    @JsonGetter
+    public String name() {
+        return name;
     }
 
+    @JsonGetter
     public List<CellStateTransition> transitions() {
         return transitions;
     }

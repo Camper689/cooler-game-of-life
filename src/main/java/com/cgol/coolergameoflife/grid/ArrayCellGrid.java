@@ -18,7 +18,6 @@ public class ArrayCellGrid extends AbstractCellGrid {
             Cell cell = cellCreator.get();
             setCell(cell, x, y);
         });
-
     }
 
     @Override

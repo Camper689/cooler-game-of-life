@@ -3,33 +3,34 @@ package com.cgol.coolergameoflife.cell;
 import com.cgol.coolergameoflife.GameOfLifeConfiguration;
 import com.cgol.coolergameoflife.cell.state.CellState;
 
-public class Cell implements Cloneable {
+public class Cell {
 
     protected CellState state;
+    protected CellState nextState;
 
     public Cell(CellState state) {
         this.state = state;
     }
 
-    public Cell clone() {
-        try {
-            return (Cell) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
+    public void calculateNextState(CellContext context, GameOfLifeConfiguration configuration) {
+        String newState = state.evolve(context);
+        if (newState != null) {
+            this.nextState = configuration.getState(newState);
+        } else {
+            this.nextState = this.state;
         }
     }
 
-    public boolean evolve(CellContext context, GameOfLifeConfiguration configuration) {
-        String newTag = state.evolve(context);
-        if (newTag != null) {
-            this.state = configuration.getState(newTag);
-            return true;
-        }
-
-        return false;
+    public void evolve() {
+        this.state = this.nextState;
     }
 
-    public String tag() {
-        return state.tag();
+    public String name() {
+        return state.name();
+    }
+
+    public void evolveInto(CellState state) {
+        this.nextState = state;
+        this.evolve();
     }
 }

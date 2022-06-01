@@ -24,3 +24,12 @@ canvas {
 .nav-item {
     margin-left: 10px;
 }
+
+.height-fill {
+    height: calc(100% - 65px);
+}
+
+textarea.height-fill {
+    font-size: 15px;
+    font-family: "Lucida Console";
+}

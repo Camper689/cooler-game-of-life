@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class GridSizeDto {
+public class GridSize {
 
     private int width;
     private int height;

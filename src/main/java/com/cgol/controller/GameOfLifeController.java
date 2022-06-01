@@ -1,10 +1,12 @@
 package com.cgol.controller;
 
-import com.cgol.dto.ConfigurationDto;
+import com.cgol.coolergameoflife.GameOfLifeConfiguration;
+import com.cgol.dto.NewGameData;
 import com.cgol.dto.GridDto;
-import com.cgol.dto.GridSizeDto;
+import com.cgol.exception.BadConfigurationException;
 import com.cgol.service.GameOfLifeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,14 +25,24 @@ public class GameOfLifeController {
         return gameOfLifeService.getGrid();
     }
 
-    @PutMapping("/add/{x}/{y}")
-    public void addCell(@PathVariable("x") int x, @PathVariable("y") int y) {
-        gameOfLifeService.addCell(x, y);
+    @PutMapping("/add/{x}/{y}/{name}")
+    public void addCell(@PathVariable("x") int x, @PathVariable("y") int y, @PathVariable("name") String cellStateName) {
+        gameOfLifeService.addCell(x, y, cellStateName);
     }
 
     @PostMapping("/new-game")
-    public void newGame(@RequestBody GridSizeDto gridSizeDto) {
-        gameOfLifeService.newGame(gridSizeDto.getWidth(), gridSizeDto.getHeight());
+    public ResponseEntity<?> newGame(@RequestBody NewGameData newGameData) {
+        try {
+            gameOfLifeService.newGame(
+                    newGameData.getGrid().getWidth(),
+                    newGameData.getGrid().getHeight(),
+                    newGameData.getConfiguration()
+            );
+
+            return ResponseEntity.ok().build();
+        } catch (BadConfigurationException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/evolve")
@@ -39,7 +51,7 @@ public class GameOfLifeController {
     }
 
     @GetMapping("/configuration")
-    public ConfigurationDto getConfiguration() {
+    public GameOfLifeConfiguration getConfiguration() {
         return gameOfLifeService.getConfiguration();
     }
 }

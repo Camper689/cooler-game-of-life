@@ -1,5 +1,7 @@
 package com.cgol.coolergameoflife.utils;
 
+import org.jetbrains.annotations.Nullable;
+
 public enum Difference {
 
     EQUALS("=", (x, y) -> x == y),
@@ -14,6 +16,15 @@ public enum Difference {
     Difference(String symbol, CompareNumbersFunction function) {
         this.symbol = symbol;
         this.function = function;
+    }
+
+    public static @Nullable Difference getFromSymbol(String symbol) {
+        for (Difference value : values()) {
+            if(value.symbol.equals(symbol))
+                return value;
+        }
+
+        return null;
     }
 
     public String symbol() {

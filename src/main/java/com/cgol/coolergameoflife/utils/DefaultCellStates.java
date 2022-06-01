@@ -6,47 +6,47 @@ import com.cgol.coolergameoflife.cell.state.CellStateTransition;
 
 import java.util.List;
 
-public final class CellStates {
+public final class DefaultCellStates {
 
-    private static final String EMPTY_CELL_TAG = "Empty cell";
-    private static final String POPULATED_CELL_TAG = "Populated cell";
+    private static final String EMPTY_CELL_NAME = "Empty cell";
+    private static final String POPULATED_CELL_NAME = "Populated cell";
 
-    public static final CellState DEFAULT_EMPTY_CELL_BEHAVIOR = new CellState(
-            EMPTY_CELL_TAG,
+    public static final CellState DEFAULT_EMPTY_CELL_STATE = new CellState(
+            EMPTY_CELL_NAME,
             List.of(
                     new CellStateTransition(
                             new CellStateCondition(
-                                    POPULATED_CELL_TAG,
+                                    POPULATED_CELL_NAME,
                                     Difference.EQUALS,
                                     3
                             ),
-                            POPULATED_CELL_TAG
+                            POPULATED_CELL_NAME
                     )
             )
     );
 
-    public static final CellState DEFAULT_POPULATED_CELL_BEHAVIOR = new CellState(
-            POPULATED_CELL_TAG,
+    public static final CellState DEFAULT_POPULATED_CELL_STATE = new CellState(
+            POPULATED_CELL_NAME,
             List.of(
                     new CellStateTransition(
                             new CellStateCondition(
-                                    POPULATED_CELL_TAG,
+                                    POPULATED_CELL_NAME,
                                     Difference.LESS,
                                     2
                             ),
-                            EMPTY_CELL_TAG
+                            EMPTY_CELL_NAME
                     ),
                     new CellStateTransition(
                             new CellStateCondition(
-                                    POPULATED_CELL_TAG,
+                                    POPULATED_CELL_NAME,
                                     Difference.MORE_OR_EQUAL,
                                     4
                             ),
-                            EMPTY_CELL_TAG
+                            EMPTY_CELL_NAME
                     )
             )
     );
 
-    private CellStates() {
+    private DefaultCellStates() {
     }
 }

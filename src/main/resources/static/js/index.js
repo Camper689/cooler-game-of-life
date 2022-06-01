@@ -5,7 +5,7 @@ const gridResource = Vue.resource('/grid');
 
 Vue.component('navbar', {
     props: [
-        'toggleConfigurationMethod', 'newGameMethod', 'evolveMethod',
+        'selectedCellName', 'toggleConfigurationMethod', 'newGameMethod', 'evolveMethod',
         'timerToggleMethod', 'timerStarted', 'zoomInMethod',
         'zoomOutMethod'
     ],
@@ -78,12 +78,12 @@ Vue.component('navbar', {
 });
 
 Vue.component('canvas-grid', {
-    props: ['styles', 'scale', 'grid', 'offset', 'size', 'getCanvasContextMethod'],
+    props: ['colors', 'scale', 'grid', 'offset', 'size', 'getCanvasContextMethod'],
     data: function() {
         return {
             context: undefined,
             grid0: this.grid,
-            styles0: this.styles,
+            colors0: this.colors,
             offset0: this.offset,
             size0: this.size
         }
@@ -96,26 +96,27 @@ Vue.component('canvas-grid', {
             this.context = this.getCanvasContextMethod('grid');
             this.draw();
         },
-        getStyleFromTag: function(tag) {
-            return this.styles0[tag];
+        getColorFromIndex: function(index) {
+            return this.colors0[index];
         },
         draw: function() {
             if(!this.grid0) return;
 
-            var prevStyle = '';
+            var prevColor = '';
             var topOffset = this.offset0;
             var leftOffset = 0;
 
             for(var rowIndex = 0; rowIndex < this.grid0.length; rowIndex++) {
                 const row = this.grid0[rowIndex];
                 leftOffset = 0 + this.offset0;
+
                 for(var elemIndex = 0; elemIndex < row.length; elemIndex++) {
                     const elem = row[elemIndex];
 
-                    var style = this.getStyleFromTag(elem);
-                    if(prevStyle != style) {
-                        prevStyle = style;
-                        this.context.fillStyle = style;
+                    const color = this.getColorFromIndex(elem);
+                    if(prevColor != color) {
+                        prevColor = color;
+                        this.context.fillStyle = color;
                     }
 
                     this.context.fillRect(leftOffset, topOffset, this.size0, this.size0);
@@ -133,8 +134,8 @@ Vue.component('canvas-grid', {
             this.grid0 = newValue;
             this.draw();
         },
-        styles: function(newValue, oldValue) {
-            this.styles0 = styles;
+        colors: function(newValue, oldValue) {
+            this.colors0 = colors;
             this.draw();
         },
         offset: function(newValue, oldValue) {
@@ -239,7 +240,7 @@ Vue.component('canvas-hover', {
 });
 
 Vue.component('canvas-parent', {
-    props: ['styles', 'scale', 'size', 'grid', 'visible', 'putCellMethod'],
+    props: ['colors', 'scale', 'size', 'grid', 'visible', 'putCellMethod'],
     data: function() {
         return {
             isVisible: this.visible
@@ -260,61 +261,259 @@ Vue.component('canvas-parent', {
         visible: function(newValue, oldValue) {
             this.isVisible = newValue;
         }
+        /*
+        _config: {
+            handler(newValue) {
+                this.config = newValue;
+            },
+            deep: true
+        }
+        */
     },
     template: `
         <div class="h-100 w-100" :class="isVisible ? '' : 'd-none'" style="position: relative">
             <canvas-hover :scale="scale" :size="size" :offset="0" :grid="grid" :getCanvasContextMethod="getCanvasContext" :putCellMethod="putCellMethod" />
             <canvas-grid
-                :styles="styles" :scale="scale" :size="size"
+                :colors="colors" :scale="scale" :size="size"
                 :offset="0" :grid="grid" :getCanvasContextMethod="getCanvasContext"
             />
         </div>
     `
 });
 
-Vue.component('cell-state-transition-config', {
-    props: ['transition'],
-    template: `
-        <div class="card mb-2">
-            <div class="card-body">
-                {{transition}}
-            </div>
-        </div>
-    `
-});
-
-Vue.component('cell-state-config', {
-    props: ['state'],
-    template: `
-        <div class="card mb-2">
-            <div class="card-body">
-                <h5 class="card-title">{{ state.tag }}</h5>
-                <span class="lead">Transitions:</span>
-                <cell-state-transition-config v-for="transition in state.transitions" :transition="transition" />
-            </div>
-        </div>
-    `
-})
-
 Vue.component('configuration', {
-    props: ['config', 'visible'],
+    props: ['config', 'visible', 'onChangeMethod', '_colors'],
     data: function() {
         return {
             isVisible: this.visible,
-            states: undefined
+            yaml: this.readConfigToYaml(this.config),
+            colors: this._colors,
+            states: undefined,
+            thereWasChanges: false,
+            errorMessage: '',
+            colorsHidden: true
+        }
+    },
+    created: function() {
+        this.states = this.config.states;
+    },
+    methods: {
+        readYamlToObject(yaml) {
+            const stack = [];
+            const lines = yaml.split("\n").reverse();
+
+            for(var line of lines) {
+                if(!line.trim().length) continue;
+
+                const match = new RegExp("[\t ]+").exec(line);
+                const symbolCountArray = match ? match[0].split('').map(symbol => symbol == '\t' ? 4 : 1) : [];
+                var nesting = 0;
+                for(var count of symbolCountArray) {
+                    nesting += count;
+                }
+
+                line = line.trim()
+                const key = line.split(":")[0];
+
+                var value = line.substring(line.indexOf(":") + 1).trim();
+                if(value == "") {
+                    value = {};
+
+                    while(stack.length && stack[0].nesting > nesting) {
+                        const firstValue = stack.shift();
+                        value[firstValue.key] = firstValue.value;
+                    }
+                }
+
+                stack.unshift({nesting, key, value});
+            }
+
+            var result = {};
+            for(var stackObj of stack) {
+                result[stackObj.key] = stackObj.value;
+            }
+
+            return result;
+        },
+        readConfigToYaml(config) {
+            var yaml = '';
+            var stateIndex = 1;
+            for(var state of config.states) {
+                const stateName = config.defaultStateName == state.name ? 'default-state' : ('state-' + stateIndex++);
+                yaml += stateName + ":\n\t";
+                yaml += "name: " + state.name + "\n\t";
+                yaml += "transitions:" + "\n\t\t";
+                var transitionIndex = 1;
+                for(var transition of state.transitions) {
+                    yaml += ("transition-" + transitionIndex++) + ":\n\t\t\t";
+                    yaml += "condition:\n\t\t\t\t";
+                    yaml += "number-of-neighbours: " + transition.condition.neighboursStateName + "\n\t\t\t\t";
+                    yaml += "is: " + transition.condition.symbol + "\n\t\t\t\t";
+                    yaml += "number: " + transition.condition.number + "\n\t\t\t";
+                    yaml += "become: " + transition.newStateName + "\n\t\t";
+                }
+
+                yaml += "\n";
+            }
+
+            return yaml;
+        },
+        onYamlChange: function() {
+            this.thereWasChanges = true;
+        },
+        reset: function() {
+            this.yaml = this.readConfigToYaml(this.config);
+            this.thereWasChanges = false;
+        },
+        error(message) {
+            this.errorMessage = message;
+            this.thereWasChanges = false;
+        },
+        save: function() {
+            this.error('');
+
+            const yamlAsJSON = this.readYamlToObject(this.yaml);
+            if(!yamlAsJSON["default-state"] || !yamlAsJSON['default-state'].name) {
+                return this.error("At least one of cell state sections must be named 'default-state'");
+            }
+
+            var states = [];
+            for(var key of Object.keys(yamlAsJSON)) {
+                const state = yamlAsJSON[key];
+
+                const name = state.name;
+                if(!name) {
+                    return this.error(state.key + " has no name");
+                }
+
+                if(states.filter(s => s.name == name).length) {
+                    return this.error("There is two states with the same name " + name);
+                }
+
+                const transitions = [];
+                if(state.transitions) {
+                    for(var transitionKey of Object.keys(state.transitions)) {
+                        const transition = state.transitions[transitionKey];
+                        const condition = transition.condition;
+                        if(!condition) {
+                            return this.error("There is no condition in transition " + transitionKey);
+                        }
+
+                        const neighbours = condition["number-of-neighbours"];
+                        if(!neighbours) {
+                            return this.error("There is no neighbour type in transition " + transitionKey);
+                        }
+
+                        if(!condition.number) {
+                            return this.error("There is no number in transition " + transitionKey);
+                        }
+
+                        const number = Number.parseInt(condition.number);
+                        if(isNaN(number)) {
+                            return this.error("Number value in transition " + transitionKey + " is not a number");
+                        }
+
+                        const symbol = condition.is;
+                        const symbolCorrect = symbol.length && (symbol == '=' || symbol == '>' || symbol == '<' || symbol == '>=' || symbol == '<=');
+                        if(!symbolCorrect) {
+                            return this.error("There is no symbol or symbol is incorrect in transition " + transitionKey);
+                        }
+
+                        const become = transition.become;
+                        if(!become) {
+                            return this.error("There is no 'become' property in transition " + transitionKey);
+                        }
+
+                        transitions.push({
+                            "condition": {
+                                "number": number,
+                                "neighboursStateName": neighbours,
+                                "symbol": symbol
+                            },
+                            "newStateName": become
+                        });
+                    }
+                }
+
+                states.push({name, transitions});
+            }
+
+            var newConfig = {
+                defaultStateName: yamlAsJSON['default-state'].name,
+                states: states
+            };
+
+            this.onChangeMethod(newConfig);
+        },
+        getHexColorByName: function(name) {
+            var cssColor = '#0000FF';
+            for(var index = 0; index < this.states.length; index++) {
+                if(this.states[index].name == name) {
+                    if(this.colors.length >= index) {
+                        cssColor = this.colors[index];
+                    }
+                    break;
+                }
+            }
+
+            return cssColor;
         }
     },
     watch: {
         visible: function(newValue, oldValue) {
             this.isVisible = newValue;
         },
-        config: function(newValue, oldValue) {
-            this.states = newValue.states;
+        config: {
+            handler(newValue) {
+                this.yaml = this.readConfigToYaml(newValue);
+                this.states = newValue.states;
+
+                while(this._colors.length < this.states.length) {
+                    this._colors.push('#0000FF');
+                }
+            },
+            deep: true
         }
     },
     template: `
-        <div class="h-100 w-100 bg-white p-2 rounded container-fluid" :class="visible ? '' : 'd-none'">
-            <cell-state-config v-for="state in states" :state="state" />
+        <div class="h-100 w-100 bg-white p-3 rounded container-fluid" :class="visible ? '' : 'd-none'">
+            <div class="h-100" :class="!colorsHidden ? 'd-none' : ''">
+                <div class="row bg-light p-3 rounded">
+                    <div class="col">
+                        <h4 class="card-title">&nbsp;Enter your configuration here: </h4>
+                        <h5 class="text-danger">{{errorMessage}}</h5>
+                    </div>
+                    <div class="col-auto ml-auto">
+                        <button class="btn btn-primary" @click="colorsHidden = false">Change colors</button>
+                        <button class="btn btn-danger" @click="reset">Reset</button>
+                        <button class="btn btn-success" @click="save" v-if="thereWasChanges">Save</button>
+                    </div>
+                </div>
+
+                <textarea v-model="yaml" class="form-control height-fill" @input="onYamlChange"></textarea>
+            </div>
+
+            <div class="h-100" :class="colorsHidden ? 'd-none' : ''">
+                <div class="row bg-light p-3 rounded">
+                    <div class="col">
+                        <h4 class="card-title">&nbsp;Edit cell colors:</h4>
+                    </div>
+                    <div class="col-auto ml-auto">
+                        <button class="btn btn-primary" @click="colorsHidden = true">Change configuration</button>
+                    </div>
+                </div>
+
+                <div class="card-deck mt-2">
+                    <div class="card mt-2" v-for="state of states">
+                        <div class="card-body">
+                            <div class="card-text p-2">
+                                <span class="lead">{{state.name}}: </span>
+                                <input type="color" :value="getHexColorByName(state.name)" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     `
 });
@@ -322,7 +521,8 @@ Vue.component('configuration', {
 Vue.component('game-of-life-app', {
     data: function() {
         return {
-            styles: ['rgb(128, 128, 128)', 'peachpuff'],
+            colors: ['#000000', '#FFDAB9', '#8A2BE2', '#D2691E', '#00FF00', '#C87064'],
+            selectedCellName: undefined,
             config: undefined,
             grid: undefined,
             replaces: undefined,
@@ -337,6 +537,7 @@ Vue.component('game-of-life-app', {
                 .then(response => response.json().then(
                     config => {
                         this.config = config;
+                        this.selectCellName(this.config);
                     }
                 ));
 
@@ -345,6 +546,13 @@ Vue.component('game-of-life-app', {
         setInterval(this.timerTick, 500);
     },
     methods: {
+        selectCellName: function(config) {
+            if(config.states.length > 1) {
+                this.selectedCellName = config.states.filter(state => state.name != config.defaultStateName)[0].name;
+            } else {
+                this.selectedCellName = config.defaultStateName;
+            }
+        },
         toggleConfiguration: function() {
             this.configurationHidden = !this.configurationHidden;
         },
@@ -353,7 +561,7 @@ Vue.component('game-of-life-app', {
         },
         newGame: function() {
             newGameResource
-                .save({width: 300, height: 150})
+                .save({grid: {width: 100, height: 100}, configuration: this.config})
                 .then(res => this.update());
         },
         loadGridFromResponse: function(gridData) {
@@ -376,7 +584,7 @@ Vue.component('game-of-life-app', {
             if(x == -1) return;
             const current = this.grid[y][x];
             if(current == 0) {
-                Vue.resource("/add/" + x + "/" + y).update({}).then(res => this.update());
+                Vue.resource("/add/" + x + "/" + y + "/" + this.selectedCellName).update({}).then(res => this.update());
             }
         },
         timerTick: function() {
@@ -390,11 +598,21 @@ Vue.component('game-of-life-app', {
         zoomOut: function() {
             if(this.scale > 3) return;
             this.scale += 0.1;
+        },
+        updateConfig(newConfig) {
+            this.config = newConfig;
+            this.selectCellName(this.config);
+
+            this.newGame();
+        },
+        updateColors(newColors) {
+            this.colors = newColors;
         }
     },
     template: `
         <div class="container-fluid h-100 mt-2">
             <navbar
+                :selectedCellName="selectedCellName"
                 :toggleConfigurationMethod="toggleConfiguration"
                 :newGameMethod="newGame"
                 :evolveMethod="evolve"
@@ -403,9 +621,15 @@ Vue.component('game-of-life-app', {
                 :zoomInMethod="zoomIn"
                 :zoomOutMethod="zoomOut"
             />
-            <configuration :config="config" :visible="!configurationHidden" />
+            <configuration
+                v-if="config"
+                :config="config"
+                :_colors="colors"
+                :visible="!configurationHidden"
+                :onChangeMethod="updateConfig"
+            />
             <canvas-parent
-                :styles="styles"
+                :colors="colors"
                 :scale="scale"
                 :size="size"
                 :grid="grid"
