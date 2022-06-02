@@ -5,18 +5,23 @@ const gridResource = Vue.resource('/grid');
 
 Vue.component('navbar', {
     props: [
-        'selectedCellName', 'toggleConfigurationMethod', 'newGameMethod', 'evolveMethod',
+        'configurationHidden', 'selectedCellName',
+        'toggleConfigurationMethod', 'newGameMethod', 'evolveMethod',
         'timerToggleMethod', 'timerStarted', 'zoomInMethod',
         'zoomOutMethod'
     ],
     data: function() {
         return {
-            playing: this.timerStarted
+            playing: this.timerStarted,
+            configurationHidden0: this.configurationHidden
         }
     },
     watch: {
         timerStarted: function(newValue, oldValue) {
             this.playing = newValue;
+        },
+        configurationHidden: function(newValue) {
+            this.configurationHidden0 = newValue;
         }
     },
     template: `
@@ -28,13 +33,10 @@ Vue.component('navbar', {
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
+                        <li class="nav-item" v-if="configurationHidden">
                             <button class="btn btn-outline-success" type="button" @click="newGameMethod()">New game</button>
                         </li>
-                        <li class="nav-item">
-                            <button class="btn btn-outline-success" type="button" @click="toggleConfigurationMethod()">Configuration...</button>
-                        </li>
-                        <li class="nav-item">
+                        <li class="nav-item" v-if="configurationHidden">
                             <button class="btn btn-outline-success" type="button" @click="evolveMethod()">
                                 Evolve
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-circle" viewBox="0 0 16 16">
@@ -42,7 +44,7 @@ Vue.component('navbar', {
                                 </svg>
                             </button>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" v-if="configurationHidden">
                             <button class="btn btn-success" @click="timerToggleMethod()">
                                 <svg :class="playing ? 'd-none' : ''" class="bi bi-play-fill" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                                     <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
@@ -52,7 +54,7 @@ Vue.component('navbar', {
                                 </svg>
                             </button>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" v-if="configurationHidden">
                             <div class="btn-group">
                                 <button class="btn btn-outline-info" type="button" @click="zoomInMethod()">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-zoom-in" viewBox="0 0 16 16">
@@ -70,6 +72,13 @@ Vue.component('navbar', {
                                 </button>
                             </div>
                         </li>
+                        <li class="nav-item" v-if="!configurationHidden">
+                            <button class="btn btn-success" type="button" @click="toggleConfigurationMethod()">Hide configuration</button>
+                        </li>
+                        <li class="nav-item" v-if="configurationHidden">
+                            <button class="btn btn-success" type="button" @click="toggleConfigurationMethod()">ShowConfiguration</button>
+                        </li>
+
                     </ul>
                 </div>
             </div>
@@ -135,7 +144,7 @@ Vue.component('canvas-grid', {
             this.draw();
         },
         colors: function(newValue, oldValue) {
-            this.colors0 = colors;
+            this.colors0 = newValue;
             this.draw();
         },
         offset: function(newValue, oldValue) {
@@ -282,12 +291,12 @@ Vue.component('canvas-parent', {
 });
 
 Vue.component('configuration', {
-    props: ['config', 'visible', 'onChangeMethod', '_colors'],
+    props: ['config', 'visible', 'onChangeMethod', 'colors', 'updateColorsMethod', 'resetColorsMethod'],
     data: function() {
         return {
             isVisible: this.visible,
             yaml: this.readConfigToYaml(this.config),
-            colors: this._colors,
+            colors0: [],
             states: undefined,
             thereWasChanges: false,
             errorMessage: '',
@@ -296,6 +305,9 @@ Vue.component('configuration', {
     },
     created: function() {
         this.states = this.config.states;
+        for(var color of this.colors) {
+            this.colors0.push(color);
+        }
     },
     methods: {
         readYamlToObject(yaml) {
@@ -445,18 +457,8 @@ Vue.component('configuration', {
 
             this.onChangeMethod(newConfig);
         },
-        getHexColorByName: function(name) {
-            var cssColor = '#0000FF';
-            for(var index = 0; index < this.states.length; index++) {
-                if(this.states[index].name == name) {
-                    if(this.colors.length >= index) {
-                        cssColor = this.colors[index];
-                    }
-                    break;
-                }
-            }
-
-            return cssColor;
+        setColor(index) {
+            console.log(index);
         }
     },
     watch: {
@@ -468,11 +470,14 @@ Vue.component('configuration', {
                 this.yaml = this.readConfigToYaml(newValue);
                 this.states = newValue.states;
 
-                while(this._colors.length < this.states.length) {
-                    this._colors.push('#0000FF');
+                while(this.colors0.length < this.states.length) {
+                    this.colors0.push('#0000FF');
                 }
             },
             deep: true
+        },
+        colors: function(newValue) {
+            this.colors0 = newValue;
         }
     },
     template: `
@@ -500,15 +505,16 @@ Vue.component('configuration', {
                     </div>
                     <div class="col-auto ml-auto">
                         <button class="btn btn-primary" @click="colorsHidden = true">Change configuration</button>
+                        <button class="btn btn-danger" @click="resetColorsMethod">Reset to default</button>
                     </div>
                 </div>
 
                 <div class="card-deck mt-2">
-                    <div class="card mt-2" v-for="state of states">
+                    <div class="card mt-2" v-for="(state, index) of states">
                         <div class="card-body">
                             <div class="card-text p-2">
                                 <span class="lead">{{state.name}}: </span>
-                                <input type="color" :value="getHexColorByName(state.name)" />
+                                <input type="color" v-model="colors0[index]" @change="updateColorsMethod(colors0)" />
                             </div>
                         </div>
                     </div>
@@ -521,7 +527,7 @@ Vue.component('configuration', {
 Vue.component('game-of-life-app', {
     data: function() {
         return {
-            colors: ['#808080', '#FFDAB9', '#8A2BE2', '#D2691E', '#00FF00', '#C87064'],
+            colors: this.readFromLocalStorage("colors", '#808080,#FFDAB9,#8A2BE2,#D2691E,#00FF00,#C87064').split(','),
             selectedCellName: undefined,
             config: undefined,
             grid: undefined,
@@ -607,19 +613,24 @@ Vue.component('game-of-life-app', {
             this.scale += 0.1;
             this.saveInLocalStorage("scale", this.scale);
         },
-        updateConfig(newConfig) {
+        updateConfig: function(newConfig) {
             this.config = newConfig;
             this.selectCellName(this.config);
 
             this.newGame();
         },
-        updateColors(newColors) {
+        updateColors: function(newColors) {
             this.colors = newColors;
+            this.saveInLocalStorage("colors", this.colors.join(','));
+        },
+        resetColors: function() {
+            this.updateColors(['#808080', '#FFDAB9', '#8A2BE2', '#D2691E', '#00FF00', '#C87064']);
         }
     },
     template: `
         <div class="container-fluid h-100 mt-2">
             <navbar
+                :configurationHidden="configurationHidden"
                 :selectedCellName="selectedCellName"
                 :toggleConfigurationMethod="toggleConfiguration"
                 :newGameMethod="newGame"
@@ -632,9 +643,11 @@ Vue.component('game-of-life-app', {
             <configuration
                 v-if="config"
                 :config="config"
-                :_colors="colors"
+                :colors="colors"
                 :visible="!configurationHidden"
                 :onChangeMethod="updateConfig"
+                :updateColorsMethod="updateColors"
+                :resetColorsMethod="resetColors"
             />
             <canvas-parent
                 :colors="colors"
