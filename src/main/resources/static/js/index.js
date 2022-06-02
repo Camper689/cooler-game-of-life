@@ -521,14 +521,14 @@ Vue.component('configuration', {
 Vue.component('game-of-life-app', {
     data: function() {
         return {
-            colors: ['#000000', '#FFDAB9', '#8A2BE2', '#D2691E', '#00FF00', '#C87064'],
+            colors: ['#808080', '#FFDAB9', '#8A2BE2', '#D2691E', '#00FF00', '#C87064'],
             selectedCellName: undefined,
             config: undefined,
             grid: undefined,
             replaces: undefined,
-            configurationHidden: false,
+            configurationHidden: true,
             timerStarted: false,
-            scale: 1.2,
+            scale: this.readFromLocalStorage("scale", 1.2),
             size: 10
         }
     },
@@ -546,6 +546,12 @@ Vue.component('game-of-life-app', {
         setInterval(this.timerTick, 500);
     },
     methods: {
+        readFromLocalStorage: function(name, defaultValue) {
+            return localStorage.getItem(name) || defaultValue;
+        },
+        saveInLocalStorage: function(name, value) {
+            localStorage.setItem(name, value);
+        },
         selectCellName: function(config) {
             if(config.states.length > 1) {
                 this.selectedCellName = config.states.filter(state => state.name != config.defaultStateName)[0].name;
@@ -594,10 +600,12 @@ Vue.component('game-of-life-app', {
         zoomIn: function() {
             if(this.scale < 0.5) return;
             this.scale -= 0.1;
+            this.saveInLocalStorage("scale", this.scale);
         },
         zoomOut: function() {
             if(this.scale > 3) return;
             this.scale += 0.1;
+            this.saveInLocalStorage("scale", this.scale);
         },
         updateConfig(newConfig) {
             this.config = newConfig;
