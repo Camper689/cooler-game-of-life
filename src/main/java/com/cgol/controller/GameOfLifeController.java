@@ -1,8 +1,8 @@
 package com.cgol.controller;
 
 import com.cgol.coolergameoflife.GameOfLifeConfiguration;
-import com.cgol.dto.NewGameData;
 import com.cgol.dto.GridDto;
+import com.cgol.dto.NewGameData;
 import com.cgol.exception.BadConfigurationException;
 import com.cgol.service.GameOfLifeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,27 +13,29 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
 
 @RestController
 public class GameOfLifeController {
 
     @Autowired
-    private GameOfLifeService gameOfLifeService;
+    protected GameOfLifeService gameOfLifeService;
 
     @GetMapping("/grid")
     public GridDto getGrid() {
-        return gameOfLifeService.getGrid();
+        return gameOfLifeService.getGrid(sessionId());
     }
 
     @PutMapping("/add/{x}/{y}/{name}")
     public void addCell(@PathVariable("x") int x, @PathVariable("y") int y, @PathVariable("name") String cellStateName) {
-        gameOfLifeService.addCell(x, y, cellStateName);
+        gameOfLifeService.addCell(sessionId(), x, y, cellStateName);
     }
 
     @PostMapping("/new-game")
     public ResponseEntity<?> newGame(@RequestBody NewGameData newGameData) {
         try {
             gameOfLifeService.newGame(
+                    sessionId(),
                     newGameData.getGrid().getWidth(),
                     newGameData.getGrid().getHeight(),
                     newGameData.getConfiguration()
@@ -47,11 +49,15 @@ public class GameOfLifeController {
 
     @PostMapping("/evolve")
     public GridDto evolve() {
-        return gameOfLifeService.evolve();
+        return gameOfLifeService.evolve(sessionId());
     }
 
     @GetMapping("/configuration")
     public GameOfLifeConfiguration getConfiguration() {
-        return gameOfLifeService.getConfiguration();
+        return gameOfLifeService.getConfiguration(sessionId());
+    }
+
+    private String sessionId() {
+        return RequestContextHolder.currentRequestAttributes().getSessionId();
     }
 }

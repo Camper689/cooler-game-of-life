@@ -10,19 +10,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class GameOfLifeService {
 
-    private GameOfLife game = new GameOfLife(100, 100, GameOfLifeConfiguration.DEFAULT_CONFIGURATION);
+    private final GameOfLifeSessionsContainer games = new GameOfLifeSessionsContainer();
 
-    public void newGame(int width, int height, GameOfLifeConfiguration configuration) {
+    public void newGame(String id, int width, int height, GameOfLifeConfiguration configuration) {
         configuration.validate();
-        game = new GameOfLife(width, height, configuration);
+        games.put(id, new GameOfLife(width, height, configuration));
     }
 
-    public GridDto evolve() {
-        game.evolve();
-        return getGrid();
+    public GridDto evolve(String id) {
+        games.get(id).evolve();
+        return getGrid(id);
     }
 
-    public void addCell(int x, int y, String name) {
+    public void addCell(String id, int x, int y, String name) {
+        GameOfLife game = games.get(id);
+
         CellGrid grid = game.grid();
         GameOfLifeConfiguration configuration = game.configuration();
 
@@ -31,11 +33,12 @@ public class GameOfLifeService {
     }
 
     // TODO: optimize
-    public GridDto getGrid() {
+    public GridDto getGrid(String id) {
+        GameOfLife game = games.get(id);
         return new GridDto(game.configuration().states(), game.grid());
     }
 
-    public GameOfLifeConfiguration getConfiguration() {
-        return game.configuration();
+    public GameOfLifeConfiguration getConfiguration(String id) {
+        return games.get(id).configuration();
     }
 }
