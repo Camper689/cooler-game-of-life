@@ -3,8 +3,8 @@ This is my java implementation of Conway's Game of Life.
 
 ### Features:
 - Basic Convay's Game of Life rules
-- You can change basic game rules
-- You can add more types of cells
+- You can change game configuration (edit state transitions, state names, add more states)
+- You can change cell colors
 
 ### How to play:
 - Run CoolerGameOfLifeApplication class;
@@ -17,7 +17,7 @@ This is my java implementation of Conway's Game of Life.
 - Import / export configuration
 - Save / load game state (lexicon)
 - Optimize evolve method for bigger grid
-- Save color palette in cookies
+
 - Make condition for cell transition more complex - add random and OR / AND operators
 
 ### Examples:
