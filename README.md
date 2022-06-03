@@ -1,23 +1,17 @@
 ## cooler-game-of-life
 This is my java implementation of Conway's Game of Life.
 
+Demo: https://cooler-game-of-life.herokuapp.com/
+
 ### Features:
 - Basic Convay's Game of Life rules
 - You can change game configuration (edit state transitions, state names, add more states)
 - You can change cell colors
 
-### How to play:
-- Run CoolerGameOfLifeApplication class;
-- Open http://localhost:9090 in your browser;
-- Put some cells on the grid;
-- Press "Play"
-
 ### TODO:
-- Multiple game sessions instead of one
 - Import / export configuration
 - Save / load game state (lexicon)
 - Optimize evolve method for bigger grid
-
 - Make condition for cell transition more complex - add random and OR / AND operators
 
 ### Examples:
