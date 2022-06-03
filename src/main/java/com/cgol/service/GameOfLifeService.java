@@ -32,8 +32,7 @@ public class GameOfLifeService {
 
     // TODO: optimize
     public GridDto getGrid() {
-        CellGrid cellGrid = game.grid();
-        return new GridDto(cellGrid);
+        return new GridDto(game.configuration().states(), game.grid());
     }
 
     public GameOfLifeConfiguration getConfiguration() {

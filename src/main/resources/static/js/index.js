@@ -5,7 +5,7 @@ const gridResource = Vue.resource('/grid');
 
 Vue.component('navbar', {
     props: [
-        'configurationHidden', 'selectedCellName',
+        'configurationHidden', 'selectedCellStateIndex', 'colors', 'setSelectedCellStateIndexMethod',
         'toggleConfigurationMethod', 'newGameMethod', 'evolveMethod',
         'timerToggleMethod', 'timerStarted', 'zoomInMethod',
         'zoomOutMethod'
@@ -13,7 +13,8 @@ Vue.component('navbar', {
     data: function() {
         return {
             playing: this.timerStarted,
-            configurationHidden0: this.configurationHidden
+            configurationHidden0: this.configurationHidden,
+            selectedCellStateIndex0: this.selectedCellStateIndex
         }
     },
     watch: {
@@ -22,6 +23,9 @@ Vue.component('navbar', {
         },
         configurationHidden: function(newValue) {
             this.configurationHidden0 = newValue;
+        },
+        selectedCellStateIndex: function(newValue) {
+            this.selectedCellStateIndex0 = newValue;
         }
     },
     template: `
@@ -72,13 +76,19 @@ Vue.component('navbar', {
                                 </button>
                             </div>
                         </li>
+                        <li class="nav-item" v-if="configurationHidden">
+                            <select class="form-select" :style="'background: ' + colors[selectedCellStateIndex]" v-model="selectedCellStateIndex0"
+                                @change="setSelectedCellStateIndexMethod(selectedCellStateIndex0)">
+                                <option :value="index" v-for="(color, index) of colors" :style="'background: ' + color"></option>
+                            </select>
+                        </li>
+
                         <li class="nav-item" v-if="!configurationHidden">
                             <button class="btn btn-success" type="button" @click="toggleConfigurationMethod()">Hide configuration</button>
                         </li>
                         <li class="nav-item" v-if="configurationHidden">
                             <button class="btn btn-success" type="button" @click="toggleConfigurationMethod()">ShowConfiguration</button>
                         </li>
-
                     </ul>
                 </div>
             </div>
@@ -528,13 +538,13 @@ Vue.component('game-of-life-app', {
     data: function() {
         return {
             colors: this.readFromLocalStorage("colors", '#808080,#FFDAB9,#8A2BE2,#D2691E,#00FF00,#C87064').split(','),
-            selectedCellName: undefined,
+            selectedCellStateIndex: 0,
             config: undefined,
             grid: undefined,
             replaces: undefined,
             configurationHidden: true,
             timerStarted: false,
-            scale: this.readFromLocalStorage("scale", 1.2),
+            scale: Number.parseFloat(this.readFromLocalStorage("scale", 1.2)),
             size: 10
         }
     },
@@ -543,7 +553,7 @@ Vue.component('game-of-life-app', {
                 .then(response => response.json().then(
                     config => {
                         this.config = config;
-                        this.selectCellName(this.config);
+                        this.calculateSelectedCellStateIndex();
                     }
                 ));
 
@@ -558,12 +568,18 @@ Vue.component('game-of-life-app', {
         saveInLocalStorage: function(name, value) {
             localStorage.setItem(name, value);
         },
-        selectCellName: function(config) {
-            if(config.states.length > 1) {
-                this.selectedCellName = config.states.filter(state => state.name != config.defaultStateName)[0].name;
-            } else {
-                this.selectedCellName = config.defaultStateName;
+        calculateSelectedCellStateIndex: function() {
+            this.selectedCellStateIndex = 0;
+
+            for(var index = 0; index < this.config.states.length; index++) {
+                if(this.config.states[index].name != this.config.defaultStateName) {
+                    this.selectedCellStateIndex = index;
+                    return;
+                }
             }
+        },
+        setSelectedCellStateIndex: function(newIndex) {
+            this.selectedCellStateIndex = newIndex;
         },
         toggleConfiguration: function() {
             this.configurationHidden = !this.configurationHidden;
@@ -593,10 +609,12 @@ Vue.component('game-of-life-app', {
                 ));
         },
         putCell: function(x, y) {
+            console.log("Put cell", x, y)
             if(x == -1) return;
             const current = this.grid[y][x];
-            if(current == 0) {
-                Vue.resource("/add/" + x + "/" + y + "/" + this.selectedCellName).update({}).then(res => this.update());
+            if(current != this.selectedCellStateIndex) {
+                Vue.resource("/add/" + x + "/" + y + "/" + this.config.states[this.selectedCellStateIndex].name).update({});
+                this.grid[y].splice(x, 1, this.selectedCellStateIndex);
             }
         },
         timerTick: function() {
@@ -615,7 +633,7 @@ Vue.component('game-of-life-app', {
         },
         updateConfig: function(newConfig) {
             this.config = newConfig;
-            this.selectCellName(this.config);
+            this.calculateSelectedCellStateIndex();
 
             this.newGame();
         },
@@ -631,7 +649,9 @@ Vue.component('game-of-life-app', {
         <div class="container-fluid h-100 mt-2">
             <navbar
                 :configurationHidden="configurationHidden"
-                :selectedCellName="selectedCellName"
+                :selectedCellStateIndex="selectedCellStateIndex"
+                :colors="colors"
+                :setSelectedCellStateIndexMethod="setSelectedCellStateIndex"
                 :toggleConfigurationMethod="toggleConfiguration"
                 :newGameMethod="newGame"
                 :evolveMethod="evolve"
