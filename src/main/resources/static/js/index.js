@@ -368,10 +368,7 @@ Vue.component('configuration', {
                 var transitionIndex = 1;
                 for(var transition of state.transitions) {
                     yaml += ("transition-" + transitionIndex++) + ":\n\t\t\t";
-                    yaml += "condition:\n\t\t\t\t";
-                    yaml += "number-of-neighbours: " + transition.condition.neighboursStateName + "\n\t\t\t\t";
-                    yaml += "is: " + transition.condition.symbol + "\n\t\t\t\t";
-                    yaml += "number: " + transition.condition.number + "\n\t\t\t";
+                    yaml += "on-condition: " + transition.condition + "\n\t\t\t";
                     yaml += "become: " + transition.newStateName + "\n\t\t";
                 }
 
@@ -405,7 +402,7 @@ Vue.component('configuration', {
 
                 const name = state.name;
                 if(!name) {
-                    return this.error(state.key + " has no name");
+                    return this.error(key + " has no name");
                 }
 
                 if(states.filter(s => s.name == name).length) {
@@ -416,42 +413,19 @@ Vue.component('configuration', {
                 if(state.transitions) {
                     for(var transitionKey of Object.keys(state.transitions)) {
                         const transition = state.transitions[transitionKey];
-                        const condition = transition.condition;
+
+                        const condition = transition['on-condition'];
                         if(!condition) {
                             return this.error("There is no condition in transition " + transitionKey);
                         }
 
-                        const neighbours = condition["number-of-neighbours"];
-                        if(!neighbours) {
-                            return this.error("There is no neighbour type in transition " + transitionKey);
-                        }
-
-                        if(!condition.number) {
-                            return this.error("There is no number in transition " + transitionKey);
-                        }
-
-                        const number = Number.parseInt(condition.number);
-                        if(isNaN(number)) {
-                            return this.error("Number value in transition " + transitionKey + " is not a number");
-                        }
-
-                        const symbol = condition.is;
-                        const symbolCorrect = symbol.length && (symbol == '=' || symbol == '>' || symbol == '<' || symbol == '>=' || symbol == '<=');
-                        if(!symbolCorrect) {
-                            return this.error("There is no symbol or symbol is incorrect in transition " + transitionKey);
-                        }
-
-                        const become = transition.become;
+                        const become = transition['become'];
                         if(!become) {
                             return this.error("There is no 'become' property in transition " + transitionKey);
                         }
 
                         transitions.push({
-                            "condition": {
-                                "number": number,
-                                "neighboursStateName": neighbours,
-                                "symbol": symbol
-                            },
+                            "condition": condition,
                             "newStateName": become
                         });
                     }

@@ -1,8 +1,8 @@
 package com.cgol.coolergameoflife.utils;
 
-import com.cgol.coolergameoflife.cell.state.CellState;
-import com.cgol.coolergameoflife.cell.state.CellStateCondition;
-import com.cgol.coolergameoflife.cell.state.CellStateTransition;
+import com.cgol.coolergameoflife.cell.CellState;
+import com.cgol.coolergameoflife.cell.CellStateTransition;
+import com.cgol.coolergameoflife.condition.ConditionReader;
 
 import java.util.List;
 
@@ -15,12 +15,8 @@ public final class DefaultCellStates {
             EMPTY_CELL_NAME,
             List.of(
                     new CellStateTransition(
-                            new CellStateCondition(
-                                    POPULATED_CELL_NAME,
-                                    Difference.EQUALS,
-                                    3
-                            ),
-                            POPULATED_CELL_NAME
+                            POPULATED_CELL_NAME,
+                            ConditionReader.DEFAULT_CONDITION_READER.readCondition("count(\"" + POPULATED_CELL_NAME + "\") == 3")
                     )
             )
     );
@@ -29,20 +25,12 @@ public final class DefaultCellStates {
             POPULATED_CELL_NAME,
             List.of(
                     new CellStateTransition(
-                            new CellStateCondition(
-                                    POPULATED_CELL_NAME,
-                                    Difference.LESS,
-                                    2
-                            ),
-                            EMPTY_CELL_NAME
+                            EMPTY_CELL_NAME,
+                            ConditionReader.DEFAULT_CONDITION_READER.readCondition("count(\"" + POPULATED_CELL_NAME + "\") < 2")
                     ),
                     new CellStateTransition(
-                            new CellStateCondition(
-                                    POPULATED_CELL_NAME,
-                                    Difference.MORE_OR_EQUAL,
-                                    4
-                            ),
-                            EMPTY_CELL_NAME
+                            EMPTY_CELL_NAME,
+                            ConditionReader.DEFAULT_CONDITION_READER.readCondition("count(\"" + POPULATED_CELL_NAME + "\") >= 4")
                     )
             )
     );

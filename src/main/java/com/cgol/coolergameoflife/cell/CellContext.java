@@ -6,16 +6,16 @@ import java.util.Map;
 public class CellContext {
 
     private final Cell[] neighbours;
-    private final Map<String, Short> cache = new HashMap<>();
+    private final Map<String, Integer> cache = new HashMap<>();
 
     public CellContext(Cell[] neighbours) {
         this.neighbours = neighbours;
     }
 
-    public short countNeighbours(String name) {
+    public int countNeighbours(String name) {
         return cache.computeIfAbsent(
                 name, (key) -> {
-                    short count = 0;
+                    int count = 0;
                     for (Cell neighbour : neighbours) {
                         if (neighbour.name().equals(key)) {
                             count++;

@@ -1,7 +1,6 @@
 package com.cgol.coolergameoflife.cell;
 
 import com.cgol.coolergameoflife.GameOfLifeConfiguration;
-import com.cgol.coolergameoflife.cell.state.CellState;
 
 public class Cell {
 

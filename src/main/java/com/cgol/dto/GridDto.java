@@ -1,6 +1,6 @@
 package com.cgol.dto;
 
-import com.cgol.coolergameoflife.cell.state.CellState;
+import com.cgol.coolergameoflife.cell.CellState;
 import com.cgol.coolergameoflife.grid.CellGrid;
 import lombok.Getter;
 

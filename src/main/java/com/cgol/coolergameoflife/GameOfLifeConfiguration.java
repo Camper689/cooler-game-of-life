@@ -1,8 +1,8 @@
 package com.cgol.coolergameoflife;
 
 import com.cgol.coolergameoflife.cell.Cell;
-import com.cgol.coolergameoflife.cell.state.CellState;
-import com.cgol.coolergameoflife.cell.state.CellStateTransition;
+import com.cgol.coolergameoflife.cell.CellState;
+import com.cgol.coolergameoflife.cell.CellStateTransition;
 import com.cgol.coolergameoflife.utils.DefaultCellStates;
 import com.cgol.exception.BadConfigurationException;
 import com.cgol.utils.TrimStringDeserializer;
@@ -78,8 +78,6 @@ public class GameOfLifeConfiguration {
         List<CellStateTransition> transitions = states.stream().flatMap(state -> state.transitions().stream()).collect(Collectors.toList());
         for (CellStateTransition transition : transitions) {
             throwOnCondition(!stateNames.contains(transition.newStateName()), "Unknown transition into state " + transition.newStateName());
-            throwOnCondition(!stateNames.contains(transition.condition().neighboursStateName()), "Unknown cell state " + transition.condition().neighboursStateName());
-            throwOnCondition(transition.condition().difference() == null, "Symbol is not specified");
         }
     }
 

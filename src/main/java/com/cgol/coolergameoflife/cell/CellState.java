@@ -1,6 +1,5 @@
-package com.cgol.coolergameoflife.cell.state;
+package com.cgol.coolergameoflife.cell;
 
-import com.cgol.coolergameoflife.cell.CellContext;
 import com.cgol.utils.TrimStringDeserializer;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -21,7 +20,7 @@ public class CellState {
 
     public @Nullable String evolve(CellContext context) {
         for (CellStateTransition transition : transitions) {
-            if (transition.condition().check(context)) {
+            if (transition.check(context)) {
                 return transition.newStateName();
             }
         }
