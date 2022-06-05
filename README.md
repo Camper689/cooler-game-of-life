@@ -11,23 +11,17 @@ Demo: https://cooler-game-of-life.herokuapp.com/
 ### Custom formulas for state transitions:
 You can use expressions like this:
 
-Will evolve if around this cell is exactly two neighbours of type "Populated cell":
 ```
+// Will evolve if around this cell is exactly two neighbours of type "Populated cell":
 count("Populated cell") == 2 
-```
 
-Same rules, but only 50% chance to evolve
-```
+// Same rules, but only 50% chance to evolve
 count("Populated cell") == 2 AND random(2) == 1
-```
 
-Will evolve with 10% chance
-```
+// Will evolve with 10% chance
 random(100) > 90 
-```
 
-Will evolve if sum of Red and Blue neighbours is 5
-```
+// Will evolve if sum of Red and Blue neighbours is 5
 sum(count("Red"), count("Blue")) == 5 
 ```
 
