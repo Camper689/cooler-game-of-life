@@ -8,11 +8,51 @@ Demo: https://cooler-game-of-life.herokuapp.com/
 - You can change game configuration (edit state transitions, state names, add more states)
 - You can change cell colors
 
+### Custom formulas for state transitions:
+You can use expressions like this:
+
+Will evolve if around this cell is exactly two neighbours of type "Populated cell":
+```
+count("Populated cell") == 2 
+```
+
+Same rules, but only 50% chance to evolve
+```
+count("Populated cell") == 2 AND random(2) == 1
+```
+
+Will evolve with 10% chance
+```
+random(100) > 90 
+```
+
+Will evolve if sum of Red and Blue neighbours is 5
+```
+sum(count("Red"), count("Blue")) == 5 
+```
+
+### All available functions:
+```
+// Returns count of neigbours of type "Populated cell" around current cell
+count("Populated cell")
+
+// Returns random number in range [0, 10)
+random(10)
+
+// Returns sum of two or more numbers
+sum(count("Red"), 1, 2)
+
+// Returns difference between two numbers
+diff(10, 5)
+
+// Inverts logical condition
+not(false)
+```
+
 ### TODO:
 - Import / export configuration
 - Save / load game state (lexicon)
 - Optimize evolve method for bigger grid
-- Make condition for cell transition more complex - add random and OR / AND operators
 
 ### Examples:
 Basic game of life configuration:
