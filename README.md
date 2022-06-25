@@ -1,7 +1,7 @@
-## cooler-game-of-life
+## game-of-cells
 This is my java implementation of Conway's Game of Life.
 
-Demo: https://cooler-game-of-life.herokuapp.com/
+Demo: https://game-of-cells.herokuapp.com/
 
 ### Features:
 - Basic Convay's Game of Life rules

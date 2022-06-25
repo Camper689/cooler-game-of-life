@@ -9,10 +9,10 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.cgol</groupId>
-    <artifactId>cooler-game-of-life</artifactId>
+    <groupId>com.game_of_cells</groupId>
+    <artifactId>game-of-cells</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>cooler-game-of-life</name>
+    <name>game-of-cells</name>
     <description>My java implementation of Conway`s Game of Life</description>
 
     <properties>
